@@ -74,7 +74,6 @@ class ZergyZergZergBot(sc2.BotAI):
                 await self.do(self.units(LARVA).closest_to(hatch).train(QUEEN))
 
 
-
     async def queen_behaviour(self):
         for hatch in self.units(HATCHERY).ready:
             larva_available = self.units(LARVA).closer_than(5.0, hatch).amount
@@ -83,11 +82,19 @@ class ZergyZergZergBot(sc2.BotAI):
                 abilities = self.get_available_abilities(queen)
                 if AbilityId.EFFECT_INJECTLARVA in abilities and larva_available <= 3:
                     await self.do(queen(EFFECT_INJECTLARVA, hatch))
-                elif AbilityId.BUILD_CREEPTUMOR in abilities:
-                    for d in range(10, 25):
-                        pos = hatchery.position.to2.towards(self.game_info.map_center, d)
-                        await self.do(queen(BUILD_CREEPTUMOR, pos))
+                
 
+    async def spread_creep(self):
+        for tumor in self.units(CREEPTUMORBURROWED).ready:
+            abilities = self.get_available_abilities(tumor)
+            if AbilityId.BUILD_CREEPTUMOR_TUMOR in abilities:
+                directions = [anywhere, but, here]
+                random_direction = random.choice([enemeny, directions])
+                for d in range(25,15):
+                    pos = tumor.position.to2.towards(random_direction, d)
+                    err = await self.do(tumor(BUILD_CREEPTUMOR_TUMOR, pos))
+                    if not err:
+                        break
 
 
     async def build_extractors(self):
